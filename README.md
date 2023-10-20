@@ -1,0 +1,2 @@
+# CIBIL-Score
+Enhance user experience by seamlessly integrating Transunion CIBIL APIs within AWS infrastructure at Equal Identify Private Limited. This system enables users to conveniently retrieve their CIBIL scores and gain insights by entering their phone number and OTP. Implemented using Java Spring Boot for backend and Flutter for frontend, ensuring a user-friendly interface and smooth navigation.

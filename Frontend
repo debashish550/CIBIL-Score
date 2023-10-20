@@ -1,1 +1,139 @@
-#
+#frontend
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^0.13.3
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'CIBIL Score Retrieval',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: PhoneNumberInputScreen(),
+    );
+  }
+}
+
+class PhoneNumberInputScreen extends StatefulWidget {
+  @override
+  _PhoneNumberInputScreenState createState() => _PhoneNumberInputScreenState();
+}
+
+class _PhoneNumberInputScreenState extends State<PhoneNumberInputScreen> {
+  TextEditingController phoneNumberController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Enter Your Phone Number'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextField(
+                controller: phoneNumberController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(labelText: 'Phone Number'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Call API to validate phone number and navigate to OTP screen
+                },
+                child: Text('Verify Phone Number'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class OTPVerificationScreen extends StatefulWidget {
+  final String phoneNumber;
+
+  OTPVerificationScreen({required this.phoneNumber});
+
+  @override
+  _OTPVerificationScreenState createState() => _OTPVerificationScreenState();
+}
+
+class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
+  TextEditingController otpController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Verify OTP'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('Enter the OTP sent to ${widget.phoneNumber}'),
+              SizedBox(height: 20),
+              TextField(
+                controller: otpController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'OTP'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Call API to verify OTP and navigate to CIBIL score screen
+                },
+                child: Text('Verify OTP'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CibilScoreScreen extends StatelessWidget {
+  final String cibilScore;
+
+  CibilScoreScreen({required this.cibilScore});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('CIBIL Score'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Your CIBIL Score: $cibilScore'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Implement navigation logic to go back to phone number input screen
+              },
+              child: Text('Check Another Number'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

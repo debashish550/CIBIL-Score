@@ -14,3 +14,108 @@
     </dependency>
     <!-- Add other dependencies as needed -->
 </dependencies>
+# Database configuration (if used)
+# spring.datasource.url=jdbc:mysql://localhost:3306/cibilscoredb
+# spring.datasource.username=root
+# spring.datasource.password=rootpassword
+
+# Transunion CIBIL API endpoints and credentials
+cibil.api.url=https://api.transunion.com/v1/cibil
+cibil.api.username=your-api-username
+cibil.api.password=your-api-password
+
+# Security configurations (customize as needed)
+spring.security.user.name=admin
+spring.security.user.password=adminpassword
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class CibilService {
+
+    @Value("${cibil.api.url}")
+    private String apiUrl;
+
+    @Value("${cibil.api.username}")
+    private String apiUsername;
+
+    @Value("${cibil.api.password}")
+    private String apiPassword;
+
+    private final RestTemplate restTemplate;
+
+    @Autowired
+    public CibilService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public boolean validatePhoneNumber(String phoneNumber) {
+        return true;
+    }
+
+    public boolean verifyOTP(String phoneNumber, String otp) {
+        return true;
+    }
+
+    public String getCibilScore(String phoneNumber) {
+        return "750";
+    }
+
+    private HttpEntity<String> createHttpEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(apiUsername, apiPassword);
+        return new HttpEntity<>(headers);
+    }
+}
+@RestController
+@RequestMapping("/api")
+public class UserController {
+
+    private final CibilService cibilService;
+
+    @Autowired
+    public UserController(CibilService cibilService) {
+        this.cibilService = cibilService;
+    }
+
+    @PostMapping("/validate-phone")
+    public ResponseEntity<String> validatePhoneNumber(@RequestParam String phoneNumber) {
+        return ResponseEntity.ok("Phone number validated successfully");
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<String> verifyOTP(@RequestParam String phoneNumber, @RequestParam String otp) {
+        return ResponseEntity.ok("OTP verified successfully");
+    }
+
+    @GetMapping("/get-cibil-score")
+    public ResponseEntity<String> getCibilScore() {
+        return ResponseEntity.ok("Your CIBIL score is 750");
+    }
+}
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+                .antMatchers("/api/**").authenticated()
+                .and()
+            .httpBasic();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .inMemoryAuthentication()
+                .withUser("admin").password("{noop}adminpassword").roles("USER");
+    }
+}
